@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useRecruiterMode } from "@/components/providers/RecruiterProvider";
 import { ArrowUpRight } from "lucide-react";
+import { SpotlightCard } from "@/components/ui/SpotlightCard";
 
 if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger);
@@ -105,11 +106,14 @@ export function ProjectGallery() {
 
 function ProjectCard({ project, large = false }: { project: typeof PROJECTS[0], large?: boolean }) {
     return (
-        <div className={`
-      relative group border border-neutral-800 bg-black p-8 
-      ${large ? "w-[800px] h-[500px]" : "w-full h-auto"} 
-      flex flex-col justify-between transition-colors hover:border-neutral-600
-    `}>
+        <SpotlightCard
+            className={`
+                group p-8 
+                ${large ? "w-[800px] h-[500px]" : "w-full h-auto"} 
+                flex flex-col justify-between transition-colors hover:border-neutral-600
+            `}
+            spotlightColor="rgba(255, 255, 255, 0.15)"
+        >
             {/* Header */}
             <div className="flex justify-between items-start">
                 <div className="font-mono text-neutral-500 text-sm tracking-widest">
@@ -136,6 +140,6 @@ function ProjectCard({ project, large = false }: { project: typeof PROJECTS[0], 
                     </span>
                 ))}
             </div>
-        </div>
+        </SpotlightCard>
     )
 }

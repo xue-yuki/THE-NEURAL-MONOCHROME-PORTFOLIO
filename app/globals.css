@@ -3,6 +3,39 @@
 :root {
   --background: #000000;
   --foreground: #ffffff;
+  background-size: 200% 200%;
+}
+
+@keyframes grid-shift {
+
+  0%,
+  100% {
+    background-position: 0% 0%;
+  }
+
+  50% {
+    background-position: 100% 100%;
+  }
+}
+
+@keyframes pulse-slow {
+
+  0%,
+  100% {
+    opacity: 0.05;
+  }
+
+  50% {
+    opacity: 0.08;
+  }
+}
+
+.animate-grid-shift {
+  animation: grid-shift 20s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s ease-in-out infinite;
 }
 
 @theme inline {
@@ -17,6 +50,16 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   overflow-x: hidden;
+}
+
+/* Force scroll position */
+html {
+  scroll-behavior: auto !important;
+}
+
+html,
+body {
+  overflow-anchor: none;
 }
 
 /* Utilities */
