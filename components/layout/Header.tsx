@@ -1,13 +1,10 @@
 "use client";
 
-import { useRecruiterMode } from "@/components/providers/RecruiterProvider";
-import { Switch } from "@/components/ui/Switch";
 import { DecryptedText } from "@/components/ui/DecryptedText";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 
 export function Header() {
-    const { isRecruiterMode, toggleRecruiterMode } = useRecruiterMode();
     const [scrolled, setScrolled] = useState(false);
 
     useEffect(() => {
@@ -43,13 +40,7 @@ export function Header() {
                     </a>
                 </nav>
 
-                <div className="flex items-center gap-4">
-                    <Switch
-                        checked={isRecruiterMode}
-                        onChange={toggleRecruiterMode}
-                        label={isRecruiterMode ? "RECRUITER ON" : "RECRUITER OFF"}
-                    />
-                </div>
+                {/* Recruiter button removed */}
             </div>
         </header>
     );

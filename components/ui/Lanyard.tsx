@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, useMemo } from 'react';
+import { useInView } from 'react-intersection-observer';
 import * as THREE from 'three';
 import { Canvas, extend, useFrame, useThree } from '@react-three/fiber';
 import { useTexture, useGLTF, Environment, Lightformer } from '@react-three/drei';
@@ -25,8 +26,12 @@ type LanyardProps = {
     transparent?: boolean;
 }
 
-export default function Lanyard({ position = [0, 0, 5], gravity = [0, -40, 0], fov = 15, transparent = true }: LanyardProps) {
+export default function Lanyard({ position = [0, 0, 5], gravity = [0, -40, 0], fov = 13, transparent = true }: LanyardProps) {
     const [isMobile, setIsMobile] = useState(false);
+    const { ref, inView } = useInView({
+        threshold: 0,
+        triggerOnce: false
+    });
 
     useEffect(() => {
         const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -36,26 +41,29 @@ export default function Lanyard({ position = [0, 0, 5], gravity = [0, -40, 0], f
     }, []);
 
     return (
-        <div className="relative z-0 w-full h-full flex justify-center items-center">
-            <Canvas
-                camera={{ position: position, fov: fov }}
-                dpr={[1, 2]}
-                gl={{ alpha: transparent, antialias: true }}
-                onCreated={({ gl }) => {
-                    gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 0);
-                }}
-            >
-                <ambientLight intensity={Math.PI} />
-                <Physics gravity={gravity} timeStep={1 / 60}>
-                    <Band />
-                </Physics>
-                <Environment blur={0.75}>
-                    <Lightformer intensity={2} color="white" position={[0, -1, 5]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
-                    <Lightformer intensity={3} color="white" position={[-1, -1, 1]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
-                    <Lightformer intensity={3} color="white" position={[1, 1, 1]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
-                    <Lightformer intensity={10} color="white" position={[-10, 0, 14]} rotation={[0, Math.PI / 2, Math.PI / 3]} scale={[100, 10, 1]} />
-                </Environment>
-            </Canvas>
+        <div ref={ref} className="relative z-0 w-full h-full flex justify-center items-center">
+            {inView && (
+                <Canvas
+                    frameloop="always"
+                    camera={{ position: position, fov: fov }}
+                    dpr={[1, 2]}
+                    gl={{ alpha: transparent, antialias: true }}
+                    onCreated={({ gl }) => {
+                        gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 0);
+                    }}
+                >
+                    <ambientLight intensity={Math.PI} />
+                    <Physics gravity={gravity} timeStep={1 / 60}>
+                        <Band />
+                    </Physics>
+                    <Environment blur={0.75}>
+                        <Lightformer intensity={2} color="white" position={[0, -1, 5]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
+                        <Lightformer intensity={3} color="white" position={[-1, -1, 1]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
+                        <Lightformer intensity={3} color="white" position={[1, 1, 1]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
+                        <Lightformer intensity={10} color="white" position={[-10, 0, 14]} rotation={[0, Math.PI / 2, Math.PI / 3]} scale={[100, 10, 1]} />
+                    </Environment>
+                </Canvas>
+            )}
         </div>
     );
 }

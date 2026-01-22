@@ -22,7 +22,7 @@ export const Squares = ({
     const numSquaresX = useRef<number>(0);
     const numSquaresY = useRef<number>(0);
     const gridOffset = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
-    const [hoveredSquare, setHoveredSquare] = useState<{ x: number; y: number } | null>(null);
+    const hoveredSquareRef = useRef<{ x: number; y: number } | null>(null);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -52,16 +52,16 @@ export const Squares = ({
                     const squareY = y * squareSize - (gridOffset.current.y % squareSize);
 
                     if (
-                        hoveredSquare &&
-                        Math.floor((x * squareSize) / squareSize) === hoveredSquare.x &&
-                        Math.floor((y * squareSize) / squareSize) === hoveredSquare.y
+                        hoveredSquareRef.current &&
+                        Math.floor((x * squareSize) / squareSize) === hoveredSquareRef.current.x &&
+                        Math.floor((y * squareSize) / squareSize) === hoveredSquareRef.current.y
                     ) {
                         ctx.fillStyle = hoverFillColor;
                         ctx.fillRect(squareX, squareY, squareSize, squareSize);
                     }
 
                     ctx.strokeStyle = borderColor;
-                    ctx.lineWidth = 0.5; // Thinner lines for aesthetics
+                    ctx.lineWidth = 0.5;
                     ctx.strokeRect(squareX, squareY, squareSize, squareSize);
                 }
             }
@@ -115,11 +115,11 @@ export const Squares = ({
             const hoverX = Math.floor((gridOffset.current.x + mouseX) / squareSize);
             const hoverY = Math.floor((gridOffset.current.y + mouseY) / squareSize);
 
-            setHoveredSquare({ x: hoverX, y: hoverY });
+            hoveredSquareRef.current = { x: hoverX, y: hoverY };
         };
 
         const handleMouseLeave = () => {
-            setHoveredSquare(null);
+            hoveredSquareRef.current = null;
         };
 
         canvas.addEventListener('mousemove', handleMouseMove);
@@ -133,7 +133,7 @@ export const Squares = ({
             canvas.removeEventListener('mousemove', handleMouseMove);
             canvas.removeEventListener('mouseleave', handleMouseLeave);
         };
-    }, [direction, speed, borderColor, hoverFillColor, hoveredSquare, squareSize]);
+    }, [direction, speed, borderColor, hoverFillColor, squareSize]);
 
     return <canvas ref={canvasRef} className={`w-full h-full border-none block ${className}`} />;
 };

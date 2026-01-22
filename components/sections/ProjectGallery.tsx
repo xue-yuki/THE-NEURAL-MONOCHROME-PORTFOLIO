@@ -82,7 +82,7 @@ export function ProjectGallery() {
 
             <div
                 ref={containerRef}
-                className={`${isRecruiterMode ? "w-full max-w-6xl mx-auto px-6 py-20" : "flex px-20 gap-20 w-[400%]"}`}
+                className={`${isRecruiterMode ? "w-full max-w-6xl mx-auto px-6 py-20" : "flex px-20 gap-20 w-[400%] will-change-transform"}`}
             >
                 {isRecruiterMode ? (
                     // Recruiter Mode: Grid Layout

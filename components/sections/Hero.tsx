@@ -39,28 +39,28 @@ export function Hero() {
                         <div className="overflow-hidden">
                             {isRecruiterMode ? (
                                 <span className="hero-line block opacity-100 translate-y-0">
-                                    NEURAL
+                                    Hello There 
                                 </span>
                             ) : (
                                 <SplitText
                                     className="hero-line block"
                                     delay={0.2}
                                 >
-                                    NEURAL
+                                    Hello There 
                                 </SplitText>
                             )}
                         </div>
                         <div className="overflow-hidden">
                             {isRecruiterMode ? (
                                 <span className="hero-line block text-neutral-500 opacity-100 translate-y-0">
-                                    MONOCHROME
+                                    I'm Erlangga 
                                 </span>
                             ) : (
                                 <SplitText
-                                    className="hero-line block text-neutral-500"
+                                    className="hero-line block text-neutral-400"
                                     delay={0.4}
                                 >
-                                    MONOCHROME
+                                    I'm Erlangga 
                                 </SplitText>
                             )}
                         </div>

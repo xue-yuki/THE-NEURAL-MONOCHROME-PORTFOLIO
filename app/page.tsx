@@ -20,7 +20,7 @@ export default async function Home() {
       <Header />
       <Hero />
       <AboutIdentity />
-      <ProjectGallery />
+      {/* <ProjectGallery /> */}
       <AIPlayground />
       <GitHubStats repos={repos} calendar={calendar} />
       <SpotifyPulse />
