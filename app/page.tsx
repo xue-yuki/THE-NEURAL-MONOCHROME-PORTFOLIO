@@ -7,6 +7,7 @@ import { GitHubStats } from "@/components/sections/GitHubStats";
 import { SpotifyPulse } from "@/components/sections/SpotifyPulse";
 import { ContactCLI } from "@/components/sections/ContactCLI";
 import { getGithubRepos, getGithubContributions } from "@/lib/github";
+import { JarvisWidget } from "@/components/sections/JarvisWidget";
 
 export default async function Home() {
   const [repos, calendar] = await Promise.all([
@@ -21,10 +22,14 @@ export default async function Home() {
       <Hero />
       <AboutIdentity />
       {/* <ProjectGallery /> */}
-      <AIPlayground />
+      {/* <AIPlayground /> -- Deprecated for Floating Widget */}
       <GitHubStats repos={repos} calendar={calendar} />
       <SpotifyPulse />
       <ContactCLI />
+
+      {/* Floating Assistant (Fixed Position) */}
+      <JarvisWidget />
+
       <div className="h-[20vh] text-center text-neutral-800 py-10 font-mono text-xs">
         © 2026 // NEURAL MONOCHROME SYSTEM
       </div>

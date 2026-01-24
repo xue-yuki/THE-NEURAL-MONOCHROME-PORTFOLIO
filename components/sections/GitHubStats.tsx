@@ -23,7 +23,7 @@ export function GitHubStats({ repos = [], calendar }: GitHubStatsProps) {
     }
 
     return (
-        <section className="py-20 border-t border-neutral-900">
+        <section id="projects" className="py-20 border-t border-neutral-900">
             <div className="container mx-auto px-6">
                 <h3 className="font-mono text-xl mb-10 flex items-center gap-2">
                     <span className="w-2 h-2 bg-white rounded-full"></span>
