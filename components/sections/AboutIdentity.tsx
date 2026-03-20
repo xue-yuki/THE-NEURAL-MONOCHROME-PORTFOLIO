@@ -117,11 +117,11 @@ export function AboutIdentity() {
                         </BentoCard>
                     </div>
 
-                    {/* 5. Wide Statement (2x1) */}
+                    {/* 5. Wide Statement (2x1) — bright accent card, overrides glass bg */}
                     <div className="col-span-1 md:col-span-2 row-span-1">
-                        <BentoCard className="h-full p-6 flex items-center justify-center bg-white text-black hover:bg-neutral-200 transition-colors">
-                            <p className="font-mono font-bold text-lg md:text-xl text-center">
-                                "Obsessed with details."
+                        <BentoCard className="h-full p-6 flex items-center justify-center !bg-white/10 !border-white/20 hover:!bg-white/15 transition-colors">
+                            <p className="font-mono font-bold text-lg md:text-xl text-center text-white">
+                                &quot;Obsessed with details.&quot;
                             </p>
                         </BentoCard>
                     </div>
@@ -159,7 +159,8 @@ function BentoCard({ children, className = "" }: { children: React.ReactNode, cl
             scale={1.02}
             className={`h-full w-full`}
         >
-            <div className={`h-full w-full bg-[#050505] border border-neutral-900 rounded-xl overflow-hidden hover:border-neutral-700 transition-colors ${className}`}>
+            {/* Updated flat card to use glassmorphism and glow-border for interactive modern UI */}
+            <div className={`h-full w-full glass glow-border rounded-xl overflow-hidden ${className}`}>
                 {children}
             </div>
         </Tilt>

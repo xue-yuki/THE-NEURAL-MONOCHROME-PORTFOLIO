@@ -26,8 +26,9 @@ export function ContactCLI() {
                     Looking to build something high-performance? Send a signal.
                 </p>
 
-                <div className="bg-black border border-neutral-800 rounded-lg p-6 font-mono text-sm md:text-base relative group focus-within:border-white transition-colors">
-                    <div className="absolute top-0 left-0 px-3 py-1 bg-neutral-900 border-r border-b border-neutral-800 text-xs text-neutral-400">
+                {/* Translucent glass application window style with dynamic shadow on focus for modern feel */}
+                <div className="glass rounded-xl p-6 font-mono text-sm md:text-base relative group focus-within:border-white/40 focus-within:shadow-[0_0_40px_rgba(255,255,255,0.06)] transition-all duration-500">
+                    <div className="absolute top-0 left-0 px-3 py-1 bg-white/5 backdrop-blur-md rounded-tl-xl border-r border-b border-white/10 text-xs text-neutral-400">
                         zsh
                     </div>
 

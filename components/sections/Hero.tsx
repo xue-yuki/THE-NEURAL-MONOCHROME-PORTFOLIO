@@ -34,7 +34,10 @@ export function Hero() {
     return (
         <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
             <div ref={textRef} className="container mx-auto px-6 z-10 relative">
-                <div className="max-w-5xl">
+                {/* Added a subtle glowing radial background for depth and premium feel */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/[0.04] rounded-full blur-[100px] pointer-events-none mix-blend-screen" />
+                
+                <div className="max-w-5xl relative z-10">
                     <h1 className="font-sans text-6xl md:text-9xl font-bold tracking-tighter leading-[0.9] mb-8">
                         <div className="overflow-hidden">
                             {isRecruiterMode ? (

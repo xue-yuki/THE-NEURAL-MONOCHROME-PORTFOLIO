@@ -16,11 +16,19 @@ export interface GithubCalendar {
     }>;
 }
 
+/* Abort controller timeout — prevents hanging forever on slow networks */
+function fetchWithTimeout(url: string, options: RequestInit = {}, timeoutMs = 8000) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
+    return fetch(url, { ...options, signal: controller.signal }).finally(() => clearTimeout(timeout));
+}
+
 export async function getGithubRepos(username: string): Promise<GithubRepo[]> {
     try {
-        const res = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=6`, {
-            next: { revalidate: 3600 }
-        });
+        const res = await fetchWithTimeout(
+            `https://api.github.com/users/${username}/repos?sort=updated&per_page=6`,
+            { next: { revalidate: 3600 } }
+        );
 
         if (!res.ok) {
             throw new Error("Failed to fetch repos");
@@ -35,17 +43,18 @@ export async function getGithubRepos(username: string): Promise<GithubRepo[]> {
             html_url: repo.html_url,
             description: repo.description,
         }));
-    } catch (error) {
-        console.error("Error fetching GitHub data:", error);
+    } catch {
+        /* Silently return empty array — network may be unavailable */
         return [];
     }
 }
 
 export async function getGithubContributions(username: string): Promise<GithubCalendar> {
     try {
-        const res = await fetch(`https://github-contributions-api.jogruber.de/v4/${username}?y=last`, {
-            next: { revalidate: 3600 }
-        });
+        const res = await fetchWithTimeout(
+            `https://github-contributions-api.jogruber.de/v4/${username}?y=last`,
+            { next: { revalidate: 3600 } }
+        );
 
         if (!res.ok) throw new Error("Failed to fetch contributions");
 
@@ -54,8 +63,8 @@ export async function getGithubContributions(username: string): Promise<GithubCa
             total: Object.values(data.total).reduce((a: any, b: any) => a + b, 0) as number,
             contributions: data.contributions
         };
-    } catch (error) {
-        console.error(error);
+    } catch {
+        /* Silently return fallback — network may be unavailable */
         return { total: 0, contributions: [] };
     }
 }

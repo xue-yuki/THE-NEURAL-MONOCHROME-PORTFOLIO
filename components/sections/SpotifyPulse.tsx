@@ -1,64 +1,205 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { useRecruiterMode } from "@/components/providers/RecruiterProvider";
+import { useState, useEffect, useCallback } from "react";
+import { ArrowRight } from "lucide-react";
+
+/* Track data shape from /api/spotify/now-playing */
+interface SpotifyTrack {
+    title: string;
+    artist: string;
+    album: string;
+    albumArt: string;
+    isPlaying: boolean;
+    currentTime: number; // ms
+    totalTime: number;   // ms
+    songUrl: string;
+}
+
+/* Fallback mock data when no Spotify connection */
+const fallbackTrack: SpotifyTrack = {
+    title: "Not Connected",
+    artist: "Connect Spotify to see what's playing",
+    album: "",
+    albumArt: "",
+    isPlaying: false,
+    currentTime: 0,
+    totalTime: 0,
+    songUrl: "",
+};
+
+/* Helper: format milliseconds to mm:ss */
+function formatTime(ms: number): string {
+    const totalSec = Math.floor(ms / 1000);
+    const m = Math.floor(totalSec / 60);
+    const s = totalSec % 60;
+    return `${m}:${String(s).padStart(2, "0")}`;
+}
 
 export function SpotifyPulse() {
-    const { isRecruiterMode } = useRecruiterMode();
-    const barsRef = useRef<HTMLDivElement>(null);
+    const [track, setTrack] = useState<SpotifyTrack | null>(null);
+    const [progress, setProgress] = useState(0);
 
+    /* Fetch current track from our API route */
+    const fetchNowPlaying = useCallback(async () => {
+        try {
+            const res = await fetch("/api/spotify/now-playing");
+            const data = await res.json();
+            if (data.title) {
+                setTrack(data);
+                setProgress(data.currentTime);
+            } else {
+                setTrack(null);
+            }
+        } catch {
+            setTrack(null);
+        }
+    }, []);
+
+    /* Poll every 30 seconds for track updates */
     useEffect(() => {
-        if (isRecruiterMode) return;
+        fetchNowPlaying();
+        const interval = setInterval(fetchNowPlaying, 30000);
+        return () => clearInterval(interval);
+    }, [fetchNowPlaying]);
 
-        const ctx = gsap.context(() => {
-            // Randomize bar heights to simulate equalizer
-            gsap.to(".audio-bar", {
-                scaleY: "random(0.1, 1)",
-                duration: 0.2,
-                ease: "power1.inOut",
-                stagger: {
-                    each: 0.05,
-                    from: "center",
-                    repeat: -1,
-                    yoyo: true,
-                },
+    /* Simulate progress ticking forward when playing */
+    useEffect(() => {
+        if (!track?.isPlaying) return;
+        const interval = setInterval(() => {
+            setProgress((p) => {
+                if (p >= (track?.totalTime || 0)) return p;
+                return p + 1000;
             });
-        }, barsRef);
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [track?.isPlaying, track?.totalTime]);
 
-        return () => ctx.revert();
-    }, [isRecruiterMode]);
+    /* Use real track or fallback */
+    const display = track || fallbackTrack;
+    const progressPercent = display.totalTime > 0 ? (progress / display.totalTime) * 100 : 0;
 
     return (
-        <section className="py-20 border-t border-neutral-900 overflow-hidden">
-            <div className="container mx-auto px-6 flex flex-col items-center justify-center">
-                <div className="flex items-center gap-6 w-full max-w-2xl border border-neutral-800 p-6 rounded-full bg-neutral-950 relative overflow-hidden">
-                    {/* Visualizer Background */}
-                    <div ref={barsRef} className="absolute inset-0 flex items-center justify-between opacity-10 px-20 pointer-events-none">
-                        {Array.from({ length: 40 }).map((_, i) => (
-                            <div key={i} className="audio-bar w-1 bg-white h-full origin-bottom" />
-                        ))}
-                    </div>
+        <section className="py-24 relative overflow-hidden">
+            <div className="container mx-auto px-6 max-w-5xl">
 
-                    {/* Content */}
-                    <div className="relative z-10 w-12 h-12 bg-neutral-800 rounded-full flex items-center justify-center animate-spin-slow">
-                        {/* Pretend Album Art */}
-                        <div className="w-6 h-6 bg-white rounded-full" />
-                    </div>
-
-                    <div className="relative z-10 flex-1 min-w-0">
-                        <div className="text-xs font-mono text-green-500 mb-1 flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                            SPOTIFY_PULSE // NOW_PLAYING
-                        </div>
-                        <div className="font-bold text-lg truncate">Deep Focus // Neural Mix</div>
-                        <div className="text-neutral-500 text-sm truncate">Binary Beats • 2026</div>
-                    </div>
-
-                    <div className="relative z-10 font-mono text-xs text-neutral-600">
-                        02:43 / 04:20
-                    </div>
+                {/* Section header */}
+                <div className="mb-10">
+                    <h3 className="font-sans text-3xl md:text-5xl font-bold tracking-tighter mb-2 text-gradient">
+                        Now Playing
+                    </h3>
+                    <p className="font-mono text-sm text-neutral-500">
+                        Live from Spotify
+                    </p>
                 </div>
+
+                {/* Main widget — glass card with ambient glow */}
+                <a
+                    href={display.songUrl || "#"}
+                    target={display.songUrl ? "_blank" : undefined}
+                    rel="noopener noreferrer"
+                    className="group relative max-w-2xl mx-auto cursor-pointer transition-transform duration-300 hover:scale-[1.02] block"
+                >
+                    {/* Ambient glow backdrop — Spotify green radial */}
+                    <div
+                        className="absolute -inset-8 rounded-3xl opacity-30 group-hover:opacity-50 transition-opacity duration-500 blur-3xl pointer-events-none"
+                        style={{ background: "radial-gradient(circle, #1DB954 0%, transparent 70%)" }}
+                    />
+
+                    {/* Glass card container */}
+                    <div className="relative glass glow-border rounded-2xl p-6 md:p-8 overflow-hidden">
+
+                        {/* NOW PLAYING label with blinking dot */}
+                        <div className="flex items-center gap-2 mb-6">
+                            <span className="relative flex h-2 w-2">
+                                {display.isPlaying && (
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1DB954] opacity-75" />
+                                )}
+                                <span className={`relative inline-flex rounded-full h-2 w-2 ${display.isPlaying ? "bg-[#1DB954]" : "bg-neutral-600"}`} />
+                            </span>
+                            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#1DB954]">
+                                {display.isPlaying ? "Now Playing" : "Recently Played"}
+                            </span>
+                        </div>
+
+                        {/* Content row: album art left, info right */}
+                        <div className="flex gap-6 md:gap-8 items-center">
+
+                            {/* Album art container with color-bleeding backdrop */}
+                            <div className="relative shrink-0">
+                                {display.albumArt ? (
+                                    <>
+                                        {/* Blurred duplicate — color bleed effect */}
+                                        <div className="absolute inset-0 scale-125 blur-2xl opacity-40 pointer-events-none rounded-xl overflow-hidden">
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img src={display.albumArt} alt="" className="w-full h-full object-cover" />
+                                        </div>
+                                        {/* Main album art — vinyl tilt, snaps to 0 on hover */}
+                                        <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-xl overflow-hidden shadow-2xl transform -rotate-3 group-hover:rotate-0 transition-transform duration-500">
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img src={display.albumArt} alt={display.album} className="w-full h-full object-cover" />
+                                        </div>
+                                    </>
+                                ) : (
+                                    /* Placeholder when no album art */
+                                    <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-xl bg-neutral-800 flex items-center justify-center transform -rotate-3 group-hover:rotate-0 transition-transform duration-500">
+                                        <span className="text-3xl">🎵</span>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Track info + equalizer */}
+                            <div className="flex-1 min-w-0">
+                                <h4 className="text-xl md:text-3xl font-bold text-white truncate tracking-tight mb-1">
+                                    {display.title}
+                                </h4>
+                                <p className="text-sm md:text-base text-neutral-400 truncate mb-0.5">
+                                    {display.artist}
+                                </p>
+                                {display.album && (
+                                    <p className="text-xs text-neutral-600 truncate mb-4">
+                                        {display.album}
+                                    </p>
+                                )}
+
+                                {/* Animated equalizer bars — only animate when playing */}
+                                <div className="flex items-end gap-[3px] h-5">
+                                    {[1, 2, 3, 4].map((i) => (
+                                        <div
+                                            key={i}
+                                            className="w-[3px] rounded-full bg-[#1DB954] origin-bottom"
+                                            style={{
+                                                animation: display.isPlaying
+                                                    ? `eq-bar 0.${4 + i}s ease-in-out infinite alternate`
+                                                    : "none",
+                                                animationDelay: `${i * 0.1}s`,
+                                                height: "100%",
+                                                transform: display.isPlaying ? undefined : "scaleY(0.2)",
+                                            }}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Progress bar — only show when we have duration */}
+                        {display.totalTime > 0 && (
+                            <div className="mt-6">
+                                <div className="relative w-full h-[3px] bg-white/10 rounded-full overflow-visible">
+                                    <div
+                                        className="absolute top-0 left-0 h-full bg-[#1DB954] rounded-full transition-all duration-1000 ease-linear"
+                                        style={{ width: `${Math.min(progressPercent, 100)}%` }}
+                                    >
+                                        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-[#1DB954] rounded-full shadow-[0_0_8px_2px_rgba(29,185,84,0.6)]" />
+                                    </div>
+                                </div>
+                                <div className="flex justify-between mt-2 font-mono text-[10px] text-neutral-600">
+                                    <span>{formatTime(progress)}</span>
+                                    <span>{formatTime(display.totalTime)}</span>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </a>
             </div>
         </section>
     );

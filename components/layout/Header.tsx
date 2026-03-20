@@ -18,7 +18,7 @@ export function Header() {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
 
-    // Scroll Effect
+    // Scroll detection for glass pill opacity change
     useEffect(() => {
         const handleScroll = () => {
             setScrolled(window.scrollY > 50);
@@ -27,170 +27,129 @@ export function Header() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    // Stagger Animation Variants
-    const menuVars = {
-        initial: {
-            scaleY: 0,
-        },
-        animate: {
-            scaleY: 1,
-            transition: {
-                duration: 0.5,
-                ease: [0.12, 0, 0.39, 0] as [number, number, number, number],
-            },
-        },
-        exit: {
-            scaleY: 0,
-            transition: {
-                delay: 0.5,
-                duration: 0.5,
-                ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
-            },
-        },
-    };
-
-    const containerVars = {
-        initial: {
-            transition: {
-                staggerChildren: 0.09,
-                staggerDirection: -1,
-            },
-        },
-        open: {
-            transition: {
-                delayChildren: 0.3,
-                staggerChildren: 0.09,
-                staggerDirection: 1,
-            },
-        },
-    };
-
-    const mobileLinkVars = {
-        initial: {
-            y: "30vh",
-            transition: {
-                duration: 0.5,
-                ease: [0.37, 0, 0.63, 1] as [number, number, number, number],
-            },
-        },
-        open: {
-            y: 0,
-            transition: {
-                ease: [0, 0.55, 0.45, 1] as [number, number, number, number],
-                duration: 0.7,
-            },
-        },
-    };
+    // Lock body scroll when drawer is open to prevent background scrolling
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "";
+        }
+        return () => { document.body.style.overflow = ""; };
+    }, [isOpen]);
 
     return (
-        <header className="fixed top-0 left-0 w-full z-50">
-            <div className={clsx(
-                "w-full transition-all duration-300 border-b border-transparent",
-                scrolled ? "bg-black/80 backdrop-blur-md border-neutral-900/50" : "bg-transparent",
-                isOpen && "!bg-transparent !border-transparent delay-500" // Hide bg when menu opens
-            )}>
-                <div className="container mx-auto px-6 h-20 flex items-center justify-between">
+        <>
+            {/* Floating glass pill navbar — stays visible even when drawer is open */}
+            <header className="fixed top-6 left-1/2 -translate-x-1/2 w-[90%] max-w-4xl z-[60]">
+                <div className={clsx(
+                    "w-full transition-all duration-500 rounded-2xl glass",
+                    scrolled ? "bg-black/60 shadow-[0_10px_40px_rgba(0,0,0,0.8)]" : "bg-white/5",
+                )}>
+                    <div className="px-6 h-16 flex items-center justify-between">
 
-                    {/* LOGO */}
-                    <div className="font-mono text-xl font-bold tracking-tighter flex gap-2 z-[60] mix-blend-difference text-white">
-                        <DecryptedText text="N/M" />
-                        <span className="opacity-50">// V2.0</span>
-                    </div>
-
-                    {/* HAMBURGER BUTTON */}
-                    <button
-                        onClick={() => setIsOpen(!isOpen)}
-                        className="z-[60] flex items-center gap-2 text-white mix-blend-difference group cursor-pointer"
-                    >
-                        <span className="hidden md:block font-mono text-xs tracking-widest group-hover:tracking-[0.2em] transition-all">
-                            {isOpen ? "CLOSE" : "MENU"}
-                        </span>
-                        <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center bg-black/50 backdrop-blur-sm group-hover:bg-white group-hover:text-black transition-all">
-                            {isOpen ? <X size={18} /> : <Menu size={18} />}
+                        {/* LOGO — text-gradient for modern sheen */}
+                        <div className="font-mono text-xl font-bold tracking-tighter flex gap-2 text-white">
+                            <DecryptedText text="N/M" />
+                            <span className="opacity-50">// V2.0</span>
                         </div>
-                    </button>
+
+                        {/* HAMBURGER BUTTON — toggles the side drawer */}
+                        <button
+                            onClick={() => setIsOpen(!isOpen)}
+                            className="flex items-center gap-2 text-white group cursor-pointer"
+                        >
+                            <span className="hidden md:block font-mono text-xs tracking-widest group-hover:tracking-[0.2em] transition-all">
+                                {isOpen ? "CLOSE" : "MENU"}
+                            </span>
+                            <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center bg-black/50 backdrop-blur-sm group-hover:bg-white group-hover:text-black transition-all">
+                                {isOpen ? <X size={18} /> : <Menu size={18} />}
+                            </div>
+                        </button>
+                    </div>
                 </div>
-            </div>
+            </header>
 
-            {/* FULLSCREEN MENU OVERLAY */}
-            <AnimatePresence mode="wait">
+            {/* SIDE DRAWER + DIM BACKDROP */}
+            <AnimatePresence>
                 {isOpen && (
-                    <motion.div
-                        key="menu-overlay"
-                        variants={menuVars}
-                        initial="initial"
-                        animate="animate"
-                        exit="exit"
-                        className="fixed top-0 left-0 w-full h-[100dvh] bg-black origin-top flex flex-col items-center justify-center overflow-hidden z-[55]"
-                    >
-                        {/* BACKGROUND NOISE */}
-                        <div className="absolute inset-0 opacity-[0.05] bg-[url('/noise.png')] pointer-events-none" />
-                        <div className="absolute inset-0 bg-neutral-900/10 pointer-events-none" />
+                    <>
+                        {/* Dim backdrop overlay — click to close drawer */}
+                        <motion.div
+                            key="drawer-backdrop"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                            onClick={() => setIsOpen(false)}
+                            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[55]"
+                        />
 
-                        <div className="flex flex-col h-full w-full max-w-7xl mx-auto px-6 pt-24 pb-10">
+                        {/* Drawer panel — slides in from the right with translateX */}
+                        <motion.aside
+                            key="drawer-panel"
+                            initial={{ x: "100%" }}
+                            animate={{ x: 0 }}
+                            exit={{ x: "100%" }}
+                            transition={{ type: "spring", damping: 30, stiffness: 300 }}
+                            className="fixed top-0 right-0 h-[100dvh] w-full max-w-sm glass bg-black/70 z-[56] flex flex-col overflow-y-auto"
+                        >
+                            {/* Close button inside the drawer */}
+                            <div className="flex items-center justify-between px-6 pt-8 pb-4 border-b border-white/10">
+                                <span className="font-mono text-xs text-neutral-500 tracking-widest">NAVIGATION</span>
+                                <button
+                                    onClick={() => setIsOpen(false)}
+                                    className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-all cursor-pointer"
+                                >
+                                    <X size={18} />
+                                </button>
+                            </div>
 
-                            {/* LINKS CONTAINER */}
-                            <motion.div
-                                variants={containerVars}
-                                initial="initial"
-                                animate="open"
-                                exit="initial"
-                                className="flex flex-col gap-4 items-start justify-center flex-1"
-                            >
+                            {/* Navigation links with staggered fade-in */}
+                            <nav className="flex flex-col gap-2 px-6 pt-8 flex-1">
                                 {menuItems.map((item, index) => (
-                                    <div key={index} className="overflow-hidden">
-                                        <motion.div variants={mobileLinkVars} className="relative group">
-                                            <a
-                                                href={item.href}
-                                                onClick={() => setIsOpen(false)}
-                                                className="block font-sans text-5xl md:text-7xl font-bold text-transparent hover:text-white transition-colors uppercase tracking-tight"
-                                                style={{ WebkitTextStroke: "1px rgba(255,255,255,0.3)" }}
-                                            >
-                                                {item.title}
-                                            </a>
-                                            {/* Hover underline / accent */}
-                                            <div className="h-[2px] w-0 group-hover:w-full bg-white transition-all duration-300 mt-2" />
-                                        </motion.div>
-                                    </div>
+                                    <motion.a
+                                        key={item.title}
+                                        href={item.href}
+                                        onClick={() => setIsOpen(false)}
+                                        initial={{ opacity: 0, x: 40 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: 40 }}
+                                        transition={{ delay: 0.1 + index * 0.07, duration: 0.4, ease: "easeOut" }}
+                                        className="group flex items-center justify-between py-4 border-b border-white/5 hover:border-white/20 transition-all"
+                                    >
+                                        <span className="font-sans text-2xl font-bold text-white/80 group-hover:text-white transition-colors tracking-tight">
+                                            {item.title}
+                                        </span>
+                                        {/* Arrow slides in on hover for interactivity */}
+                                        <ArrowRight size={16} className="text-neutral-600 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                                    </motion.a>
                                 ))}
-                            </motion.div>
+                            </nav>
 
-                            {/* FOOTER INFO */}
+                            {/* Footer info inside drawer */}
                             <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.5, duration: 0.5 }}
-                                className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-8 font-mono text-xs text-neutral-500"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.5, duration: 0.4 }}
+                                className="px-6 pb-8 pt-6 border-t border-white/10 font-mono text-xs text-neutral-500"
                             >
-                                <div className="max-w-xs">
-                                    <p className="mb-2 text-white">CONTACT INFO</p>
-                                    <p>Erlangga (Xue-Yuki)</p>
-                                    <p>Fullstack AI Engineer</p>
-                                    <p>Indonesia</p>
-                                </div>
-                                <div className="flex flex-col gap-2">
-                                    <a href="#" className="hover:text-white transition-colors flex items-center gap-2">
+                                <p className="mb-3 text-white text-sm">CONTACT</p>
+                                <p>Erlangga (Xue-Yuki)</p>
+                                <p>Fullstack AI Engineer</p>
+                                <p className="mb-4">Indonesia</p>
+                                <div className="flex gap-4">
+                                    <a href="#" className="hover:text-white transition-colors flex items-center gap-1">
                                         LINKEDIN <ArrowRight size={10} />
                                     </a>
-                                    <a href="#" className="hover:text-white transition-colors flex items-center gap-2">
+                                    <a href="#" className="hover:text-white transition-colors flex items-center gap-1">
                                         GITHUB <ArrowRight size={10} />
-                                    </a>
-                                    <a href="#" className="hover:text-white transition-colors flex items-center gap-2">
-                                        INSTAGRAM <ArrowRight size={10} />
                                     </a>
                                 </div>
                             </motion.div>
-
-                        </div>
-
-                        {/* CLOSE DECORATION */}
-                        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/5 font-black text-[10rem] md:text-[20rem] leading-none pointer-events-none select-none z-[-1]">
-                            MENU
-                        </div>
-
-                    </motion.div>
+                        </motion.aside>
+                    </>
                 )}
             </AnimatePresence>
-        </header>
+        </>
     );
 }

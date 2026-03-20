@@ -131,7 +131,11 @@ function Band({ maxSpeed = 50, minSpeed = 0 }) {
             curve.points[2].copy(j1.current.lerped);
             curve.points[3].copy(fixed.current.translation());
 
-            if (band.current) {
+            /* Guard: skip setPoints if any curve point has NaN — prevents
+               THREE.BufferGeometry.computeBoundingSphere NaN crash on early frames */
+            const hasNaN = curve.points.some(p => isNaN(p.x) || isNaN(p.y) || isNaN(p.z));
+
+            if (band.current && !hasNaN) {
                 band.current.geometry.setPoints(curve.getPoints(32));
             }
 
