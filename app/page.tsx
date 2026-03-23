@@ -40,7 +40,9 @@ export default async function Home() {
           <Achievements />
         </ScrollReveal>
 
-        {/* <ProjectGallery /> */}
+        <ScrollReveal variant="fade-up">
+          <ProjectGallery />
+        </ScrollReveal>
         {/* <AIPlayground /> -- Deprecated for Floating Widget */}
 
         {/* GitHub — clip-path reveal from bottom for a cinematic feel */}
