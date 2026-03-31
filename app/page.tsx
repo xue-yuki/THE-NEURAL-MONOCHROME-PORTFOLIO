@@ -3,6 +3,7 @@ import { Hero } from "@/components/sections/Hero";
 import { AboutIdentity } from "@/components/sections/AboutIdentity";
 import { Achievements } from "@/components/sections/Achievements";
 import { ProjectGallery } from "@/components/sections/ProjectGallery";
+import { TechStack } from "@/components/sections/TechStack";
 import { AIPlayground } from "@/components/sections/AIPlayground";
 import { GitHubStats } from "@/components/sections/GitHubStats";
 import { SpotifyPulse } from "@/components/sections/SpotifyPulse";
@@ -42,6 +43,10 @@ export default async function Home() {
 
         <ScrollReveal variant="fade-up">
           <ProjectGallery />
+        </ScrollReveal>
+        
+        <ScrollReveal variant="fade-up" delay={0.1}>
+          <TechStack />
         </ScrollReveal>
         {/* <AIPlayground /> -- Deprecated for Floating Widget */}
 

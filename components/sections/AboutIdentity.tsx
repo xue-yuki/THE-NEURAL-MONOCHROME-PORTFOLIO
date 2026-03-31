@@ -166,3 +166,4 @@ function BentoCard({ children, className = "" }: { children: React.ReactNode, cl
         </Tilt>
     );
 }
+    
