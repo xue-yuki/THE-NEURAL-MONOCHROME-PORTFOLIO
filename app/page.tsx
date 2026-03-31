@@ -1,5 +1,6 @@
 import { Header } from "@/components/layout/Header";
 import { Hero } from "@/components/sections/Hero";
+import { Manifesto } from "@/components/sections/Manifesto";
 import { AboutIdentity } from "@/components/sections/AboutIdentity";
 import { Achievements } from "@/components/sections/Achievements";
 import { ProjectGallery } from "@/components/sections/ProjectGallery";
@@ -30,6 +31,8 @@ export default async function Home() {
         <div className="noise-overlay" />
         <Header />
         <Hero />
+        
+        <Manifesto />
 
         {/* About section — fades up as it enters the viewport */}
         <ScrollReveal variant="fade-up">
