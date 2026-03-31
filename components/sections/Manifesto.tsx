@@ -17,7 +17,7 @@ export function Manifesto() {
     const words = text.split(" ");
 
     return (
-        <section ref={containerRef} className="relative bg-neutral-950 py-32 md:py-56 flex flex-col justify-center overflow-hidden">
+        <section ref={containerRef} className="relative py-32 md:py-56 flex flex-col justify-center overflow-hidden">
             <div className="container mx-auto px-6 max-w-6xl relative z-10">
                 <h2 className="text-4xl md:text-6xl lg:text-7xl xl:text-[5.5rem] font-sans font-black tracking-tighter uppercase leading-[1.1] md:leading-[1.1] flex flex-wrap gap-x-3 md:gap-x-6 gap-y-2 md:gap-y-4">
                     {words.map((word, i) => {

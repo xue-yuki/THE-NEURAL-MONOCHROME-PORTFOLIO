@@ -59,7 +59,7 @@ export function ProjectGallery() {
         <section 
             onMouseMove={handleMouseMove}
             id="projects" 
-            className="relative min-h-screen bg-neutral-950 pt-24 pb-32 overflow-hidden"
+            className="relative min-h-screen pt-24 pb-32 overflow-hidden"
         >
             <div className="container mx-auto px-6 max-w-7xl relative z-10">
                 

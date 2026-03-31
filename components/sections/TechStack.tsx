@@ -51,7 +51,7 @@ export function TechStack() {
     if (isRecruiterMode) {
         // Fallback for recruiter mode: clean minimalist grid list instead of overwhelming marquee
         return (
-            <section className="bg-neutral-950 py-32 border-t border-neutral-900">
+            <section className="py-32 border-t border-neutral-900">
                 <div className="container mx-auto px-6 max-w-6xl">
                     <h2 className="text-3xl font-sans font-bold text-white mb-12">Core Competencies</h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -76,7 +76,7 @@ export function TechStack() {
     }
 
     return (
-        <section className="relative min-h-screen bg-neutral-950 py-32 flex flex-col justify-center overflow-hidden">
+        <section className="relative min-h-screen py-32 flex flex-col justify-center overflow-hidden">
             <div className="container mx-auto px-6 max-w-7xl mb-16 relative z-10">
                 {/* Architectural Aligning Header */}
                 <div className="flex justify-between items-end pb-6 border-b border-neutral-800/80">
