@@ -1,18 +1,19 @@
 import { Header } from "@/components/layout/Header";
 import { Hero } from "@/components/sections/Hero";
-import { Manifesto } from "@/components/sections/Manifesto";
-import { AboutIdentity } from "@/components/sections/AboutIdentity";
-import { Achievements } from "@/components/sections/Achievements";
-import { ProjectGallery } from "@/components/sections/ProjectGallery";
-import { TechStack } from "@/components/sections/TechStack";
-import { AIPlayground } from "@/components/sections/AIPlayground";
-import { GitHubStats } from "@/components/sections/GitHubStats";
-import { SpotifyPulse } from "@/components/sections/SpotifyPulse";
-import { ContactCLI } from "@/components/sections/ContactCLI";
+import dynamic from "next/dynamic";
+const Manifesto = dynamic(() => import("@/components/sections/Manifesto").then(mod => mod.Manifesto));
+const AboutIdentity = dynamic(() => import("@/components/sections/AboutIdentity").then(mod => mod.AboutIdentity));
+const Achievements = dynamic(() => import("@/components/sections/Achievements").then(mod => mod.Achievements));
+const ProjectGallery = dynamic(() => import("@/components/sections/ProjectGallery").then(mod => mod.ProjectGallery));
+const TechStack = dynamic(() => import("@/components/sections/TechStack").then(mod => mod.TechStack));
+const GitHubStats = dynamic(() => import("@/components/sections/GitHubStats").then(mod => mod.GitHubStats));
+// const SpotifyPulse = dynamic(() => import("@/components/sections/SpotifyPulse").then(mod => mod.SpotifyPulse));
+const ContactCLI = dynamic(() => import("@/components/sections/ContactCLI").then(mod => mod.ContactCLI));
+const JarvisWidget = dynamic(() => import("@/components/sections/JarvisWidget").then(mod => mod.JarvisWidget));
+
 import { getGithubRepos, getGithubContributions } from "@/lib/github";
-import { JarvisWidget } from "@/components/sections/JarvisWidget";
 /* Premium enhancements — animated bg + scroll-driven transitions */
-import { MeshGradient } from "@/components/ui/MeshGradient";
+import { MeshGradient } from "@/components/ui/MeshGradientWrapper";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 
 export default async function Home() {
@@ -58,10 +59,10 @@ export default async function Home() {
           <GitHubStats repos={repos} calendar={calendar} />
         </ScrollReveal>
 
-        {/* Spotify — blur-in for a dreamy, premium entrance */}
-        <ScrollReveal variant="blur-in" delay={0.1}>
+        {/* Spotify — Temporarily disabled for performance pass */}
+        {/* <ScrollReveal variant="blur-in" delay={0.1}>
           <SpotifyPulse />
-        </ScrollReveal>
+        </ScrollReveal> */}
 
         {/* Contact — fade-up, the classic clean entrance */}
         <ScrollReveal variant="fade-up" delay={0.1}>

@@ -37,22 +37,6 @@ export default function RootLayout({
                   
                   // Immediate reset
                   window.scrollTo(0, 0);
-                  
-                  // Persistent reset for first 500ms
-                  var resetCount = 0;
-                  var resetInterval = setInterval(function() {
-                    window.scrollTo(0, 0);
-                    document.documentElement.scrollTop = 0;
-                    document.body.scrollTop = 0;
-                    resetCount++;
-                    if (resetCount > 10) clearInterval(resetInterval);
-                  }, 50);
-                  
-                  // Final reset on load
-                  window.addEventListener('load', function() {
-                    window.scrollTo(0, 0);
-                    clearInterval(resetInterval);
-                  });
                 }
               })();
             `,

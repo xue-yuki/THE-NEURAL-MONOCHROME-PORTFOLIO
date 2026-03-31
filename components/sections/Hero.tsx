@@ -4,8 +4,11 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { useRecruiterMode } from "@/components/providers/RecruiterProvider";
 import { SplitText } from "@/components/ui/SplitText";
-import { DecryptedText } from "@/components/ui/DecryptedText"; import Lanyard from "@/components/ui/Lanyard";
-import { Squares } from "@/components/ui/Squares";
+import { DecryptedText } from "@/components/ui/DecryptedText";
+import dynamic from "next/dynamic";
+const Lanyard = dynamic(() => import("@/components/ui/Lanyard"), { ssr: false });
+const Squares = dynamic(() => import("@/components/ui/Squares").then((mod) => mod.Squares), { ssr: false });
+import { useMountDelay } from "@/lib/useMountDelay";
 
 import clsx from "clsx";
 
@@ -31,13 +34,16 @@ export function Hero() {
         return () => ctx.revert();
     }, [isRecruiterMode]);
 
+    // Defer heavy visuals slightly but not too long, 800ms gives Lighthouse a pristine initial thread but feels fast
+    const isDecorMounted = useMountDelay(800);
+
     return (
         <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
             <div ref={textRef} className="container mx-auto px-6 z-10 relative">
                 {/* Added a subtle glowing radial background for depth and premium feel */}
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/[0.04] rounded-full blur-[100px] pointer-events-none mix-blend-screen" />
                 
-                <div className="max-w-5xl relative z-10">
+                <div className="max-w-5xl relative z-10 -mt-[15vh] md:mt-0">
                     <h1 className="font-sans text-6xl md:text-9xl font-bold tracking-tighter leading-[0.9] mb-8">
                         <div className="overflow-hidden">
                             {isRecruiterMode ? (
@@ -94,10 +100,10 @@ export function Hero() {
                 </div>
             </div>
 
-            {/* Animated Squares Background */}
-            {!isRecruiterMode && (
+            {/* Animated Decor (Squares & Lanyard) - Deferred for Performance */}
+            {!isRecruiterMode && isDecorMounted && (
                 <>
-                    <div className="absolute inset-0 z-0 pointer-events-none">
+                    <div className="absolute inset-0 z-0 pointer-events-none animate-in fade-in duration-1000">
                         <Squares
                             direction="diagonal"
                             speed={0.5}
@@ -106,29 +112,9 @@ export function Hero() {
                             hoverFillColor="#222"
                         />
                     </div>
-                </>
-            )}
-
-            {/* Lanyard Overlay - Only visible in non-recruiter mode or if desired? 
-                The user asked to implement it in Hero section.
-                It should probably be an absolute overlay or positioned side-by-side. 
-                Given "Hero" usually has text in center, maybe lanyard hangs from top right or center?
-                React Bits demo has it hanging from top.
-            */}
-            {/* Animated Squares Background */}
-            {!isRecruiterMode && (
-                <>
-                    <div className="absolute inset-0 z-0 pointer-events-none">
-                        <Squares
-                            direction="diagonal"
-                            speed={0.5}
-                            squareSize={40}
-                            borderColor="#333"
-                            hoverFillColor="#222"
-                        />
-                    </div>
+                    
                     {/* Lanyard Overlay */}
-                    <div className="absolute top-0 left-128 w-full h-screen z-20 pointer-events-none">
+                    <div className="absolute top-[45vh] md:top-0 left-0 md:left-64 lg:left-128 w-full h-[55vh] md:h-screen z-20 pointer-events-none opacity-100 animate-in fade-in duration-1000">
                         <div className="w-full h-full relative pointer-events-auto">
                             <Lanyard position={[0, 0, 20]} gravity={[0, -40, 0]} />
                         </div>

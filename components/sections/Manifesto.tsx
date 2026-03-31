@@ -1,16 +1,19 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
+import { motion, useScroll, useTransform, MotionValue, useSpring } from "framer-motion";
 
 export function Manifesto() {
     const containerRef = useRef<HTMLDivElement>(null);
     const { scrollYProgress } = useScroll({
         target: containerRef,
-        // Start animating when the top of the element hits 80% down the viewport
-        // Finish animating when the top hits 30% down the viewport
-        offset: ["start 80%", "start 30%"],
+        // Start animating when the top of the element hits 90% down the viewport (baru masuk layar)
+        // Finish animating when the bottom of the element hits 60% down the viewport (hampir selesai dilewati)
+        offset: ["start 90%", "end 60%"],
     });
+
+    // Tambahkan efek physics "per" biar ga kaku walau user scroll cepet banget
+    const smoothProgress = useSpring(scrollYProgress, { stiffness: 50, damping: 20 });
 
     // The core manifesto phrase.
     const text = "BUILDING INTELLIGENT SYSTEMS AT THE INTERSECTION OF RAW CODE AND STUNNING AESTHETICS.";
@@ -25,7 +28,7 @@ export function Manifesto() {
                         const start = i / words.length;
                         const end = start + (1 / words.length);
                         return (
-                            <Word key={i} progress={scrollYProgress} range={[start, end]}>
+                            <Word key={i} progress={smoothProgress} range={[start, end]}>
                                 {word}
                             </Word>
                         );

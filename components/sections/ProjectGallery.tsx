@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, useSpring } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
+import Image from "next/image";
 import { useRecruiterMode } from "@/components/providers/RecruiterProvider";
 
 const PROJECTS = [
@@ -148,12 +149,14 @@ export function ProjectGallery() {
                     >
                         {PROJECTS.map((project, idx) => (
                             <div key={idx} className="w-full h-full shrink-0 relative overflow-hidden">
-                                <img
+                                <Image
                                     src={project.image}
                                     alt={project.title}
-                                    className="w-full h-full object-cover opacity-90 will-change-transform grayscale group-hover/list:grayscale-0 transition-all duration-700"
+                                    fill
+                                    sizes="(max-width: 768px) 100vw, 500px"
+                                    className="object-cover opacity-90 will-change-transform grayscale group-hover/list:grayscale-0 transition-all duration-700"
                                     style={{
-                                        // Slick zoom-out parallax effect when active
+                                        // outline: "none", // avoid border artifacts 
                                         transform: hoveredIndex === idx ? 'scale(1)' : 'scale(1.15)',
                                         transition: 'transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)',
                                     }}

@@ -48,18 +48,24 @@ export function ContactCLI() {
                         </h3>
                         <form onSubmit={handleSubmit} className="flex flex-col gap-10">
                             <div className="group relative">
+                                <label htmlFor="email" className="sr-only">Email Address</label>
                                 <input 
+                                    id="email"
                                     type="email" 
                                     placeholder="your@email.com" 
                                     required
+                                    aria-label="Email Address"
                                     className="w-full bg-transparent border-b border-neutral-800 pb-4 text-xl md:text-2xl font-sans text-neutral-200 outline-none focus:border-white transition-colors placeholder:text-neutral-700 font-light" 
                                 />
                             </div>
                             <div className="group relative">
+                                <label htmlFor="message" className="sr-only">Message Content</label>
                                 <textarea 
+                                    id="message"
                                     rows={2}
                                     placeholder="Tell me about your project..." 
                                     required
+                                    aria-label="Message Content"
                                     className="w-full bg-transparent border-b border-neutral-800 pb-4 text-xl md:text-2xl font-sans text-neutral-200 outline-none focus:border-white transition-colors placeholder:text-neutral-700 font-light resize-none overflow-hidden" 
                                 />
                             </div>
@@ -98,6 +104,7 @@ export function ContactCLI() {
                                         href={social.url} 
                                         target="_blank"
                                         rel="noopener noreferrer"
+                                        aria-label={`Visit my ${social.name} profile`}
                                         className="group flex justify-between items-center text-xl md:text-2xl font-sans text-neutral-400 hover:text-white border-b border-neutral-800/50 pb-4 transition-all hover:border-neutral-500"
                                     >
                                         <span className="group-hover:translate-x-3 transition-transform duration-300">

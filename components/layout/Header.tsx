@@ -56,6 +56,7 @@ export function Header() {
                         {/* HAMBURGER BUTTON — toggles the side drawer */}
                         <button
                             onClick={() => setIsOpen(!isOpen)}
+                            aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
                             className="flex items-center gap-2 text-white group cursor-pointer"
                         >
                             <span className="hidden md:block font-mono text-xs tracking-widest group-hover:tracking-[0.2em] transition-all">
@@ -98,6 +99,7 @@ export function Header() {
                                 <span className="font-mono text-xs text-neutral-500 tracking-widest">NAVIGATION</span>
                                 <button
                                     onClick={() => setIsOpen(false)}
+                                    aria-label="Close navigation menu"
                                     className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-all cursor-pointer"
                                 >
                                     <X size={18} />
@@ -138,10 +140,10 @@ export function Header() {
                                 <p>Fullstack AI Engineer</p>
                                 <p className="mb-4">Indonesia</p>
                                 <div className="flex gap-4">
-                                    <a href="#" className="hover:text-white transition-colors flex items-center gap-1">
+                                    <a href="#" aria-label="Visit my LinkedIn profile" className="hover:text-white transition-colors flex items-center gap-1">
                                         LINKEDIN <ArrowRight size={10} />
                                     </a>
-                                    <a href="#" className="hover:text-white transition-colors flex items-center gap-1">
+                                    <a href="#" aria-label="Visit my GitHub profile" className="hover:text-white transition-colors flex items-center gap-1">
                                         GITHUB <ArrowRight size={10} />
                                     </a>
                                 </div>

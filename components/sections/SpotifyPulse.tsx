@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
 /* Track data shape from /api/spotify/now-playing */
@@ -97,6 +98,7 @@ export function SpotifyPulse() {
                     href={display.songUrl || "#"}
                     target={display.songUrl ? "_blank" : undefined}
                     rel="noopener noreferrer"
+                    aria-label={`Listen to ${display.title} by ${display.artist} on Spotify`}
                     className="group relative max-w-2xl mx-auto cursor-pointer transition-transform duration-300 hover:scale-[1.02] block"
                 >
                     {/* Ambient glow backdrop — Spotify green radial */}
@@ -130,13 +132,11 @@ export function SpotifyPulse() {
                                     <>
                                         {/* Blurred duplicate — color bleed effect */}
                                         <div className="absolute inset-0 scale-125 blur-2xl opacity-40 pointer-events-none rounded-xl overflow-hidden">
-                                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                                            <img src={display.albumArt} alt="" className="w-full h-full object-cover" />
+                                            <Image src={display.albumArt} fill sizes="(max-width: 768px) 48px, 64px" alt="Album art" className="object-cover" />
                                         </div>
                                         {/* Main album art — vinyl tilt, snaps to 0 on hover */}
                                         <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-xl overflow-hidden shadow-2xl transform -rotate-3 group-hover:rotate-0 transition-transform duration-500">
-                                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                                            <img src={display.albumArt} alt={display.album} className="w-full h-full object-cover" />
+                                            <Image src={display.albumArt} fill sizes="(max-width: 768px) 48px, 64px" alt={display.album} className="object-cover" />
                                         </div>
                                     </>
                                 ) : (
