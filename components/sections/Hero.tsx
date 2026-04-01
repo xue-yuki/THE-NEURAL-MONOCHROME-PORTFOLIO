@@ -12,7 +12,7 @@ import { useMountDelay } from "@/lib/useMountDelay";
 
 import clsx from "clsx";
 
-export function Hero() {
+export function Hero({ siteTexts = {} }: { siteTexts?: Record<string, string> }) {
     const { isRecruiterMode } = useRecruiterMode();
     const textRef = useRef<HTMLDivElement>(null);
 
@@ -37,6 +37,11 @@ export function Hero() {
     // Defer heavy visuals slightly but not too long, 800ms gives Lighthouse a pristine initial thread but feels fast
     const isDecorMounted = useMountDelay(800);
 
+    const greeting = siteTexts["hero_greeting"] || "Hello There";
+    const name = siteTexts["hero_name"] || "I'm Erlangga";
+    const desc1 = siteTexts["hero_desc_1"] || "Fullstack Developer & AI Engineer.";
+    const desc2 = siteTexts["hero_desc_2"] || "Building intelligent, high-performance web experiences.";
+
     return (
         <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
             <div ref={textRef} className="container mx-auto px-6 z-10 relative">
@@ -48,28 +53,28 @@ export function Hero() {
                         <div className="overflow-hidden">
                             {isRecruiterMode ? (
                                 <span className="hero-line block opacity-100 translate-y-0">
-                                    Hello There 
+                                    {greeting}
                                 </span>
                             ) : (
                                 <SplitText
                                     className="hero-line block"
                                     delay={0.2}
                                 >
-                                    Hello There 
+                                    {greeting}
                                 </SplitText>
                             )}
                         </div>
                         <div className="overflow-hidden">
                             {isRecruiterMode ? (
                                 <span className="hero-line block text-neutral-500 opacity-100 translate-y-0">
-                                    I'm Erlangga 
+                                    {name}
                                 </span>
                             ) : (
                                 <SplitText
                                     className="hero-line block text-neutral-400"
                                     delay={0.4}
                                 >
-                                    I'm Erlangga 
+                                    {name}
                                 </SplitText>
                             )}
                         </div>
@@ -78,19 +83,19 @@ export function Hero() {
                     <div className="overflow-hidden max-w-2xl">
                         {isRecruiterMode ? (
                             <p className="hero-line text-xl md:text-2xl font-mono text-neutral-400 opacity-100 translate-y-0">
-                                Fullstack Developer & AI Engineer. <br />
-                                Building intelligent, high-performance web experiences.
+                                {desc1} <br />
+                                {desc2}
                             </p>
                         ) : (
                             <div className="hero-line text-xl md:text-2xl font-mono text-neutral-400">
                                 <DecryptedText
-                                    text="Fullstack Developer & AI Engineer."
+                                    text={desc1}
                                     className="block mb-2 text-white"
                                     speed={30}
                                     maxIterations={20}
                                 />
                                 <DecryptedText
-                                    text="Building intelligent, high-performance web experiences."
+                                    text={desc2}
                                     speed={20}
                                     revealDirection="center"
                                 />

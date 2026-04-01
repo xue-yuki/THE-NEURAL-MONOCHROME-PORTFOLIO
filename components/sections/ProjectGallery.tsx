@@ -6,7 +6,7 @@ import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import { useRecruiterMode } from "@/components/providers/RecruiterProvider";
 
-const PROJECTS = [
+export const fallbackProjects = [
     {
         id: "01",
         title: "NEURAL_SYNC",
@@ -41,7 +41,17 @@ const PROJECTS = [
     },
 ];
 
-export function ProjectGallery() {
+type ProjectItem = {
+    id: string;
+    title: string;
+    category: string;
+    desc: string;
+    tags: string[];
+    image: string;
+};
+
+export function ProjectGallery({ items = fallbackProjects }: { items?: ProjectItem[] }) {
+    const displayItems = items.length > 0 ? items : fallbackProjects;
     const { isRecruiterMode } = useRecruiterMode();
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
@@ -76,7 +86,7 @@ export function ProjectGallery() {
 
                 {/* Refined Typography List */}
                 <div className="flex flex-col group/list w-full">
-                    {PROJECTS.map((project, index) => (
+                    {displayItems.map((project, index) => (
                         <div
                             key={project.id}
                             className="group relative border-b border-neutral-800/60 hover:border-neutral-600 transition-colors duration-500"
@@ -147,7 +157,7 @@ export function ProjectGallery() {
                         className="w-full h-full flex flex-col transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] will-change-transform bg-neutral-950"
                         style={{ transform: `translateY(-${(hoveredIndex ?? 0) * 100}%)` }}
                     >
-                        {PROJECTS.map((project, idx) => (
+                        {displayItems.map((project, idx) => (
                             <div key={idx} className="w-full h-full shrink-0 relative overflow-hidden">
                                 <Image
                                     src={project.image}

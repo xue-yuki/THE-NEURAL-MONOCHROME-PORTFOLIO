@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Achievement {
+  id          String   @id @default(uuid())
+  title       String
+  category    String
+  year        String
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  title       String
+  category    String   @default("PROJECT")
+  description String
+  imageUrl    String?
+  demoUrl     String?
+  repoUrl     String?
+  techStack   String[] // Array of strings for tech stack tags
+  featured    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SiteText {
+  key   String @id // e.g., 'hero_title', 'about_description'
+  value String
+}

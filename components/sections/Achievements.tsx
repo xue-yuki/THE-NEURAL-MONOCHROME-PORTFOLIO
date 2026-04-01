@@ -4,8 +4,8 @@ import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
-/* --- Placeholder achievement data --- */
-const achievements = [
+/* --- Placeholder achievement data (Fallback) --- */
+export const fallbackAchievements = [
     {
         title: "OSN Informatika — School Selection",
         category: "Competition",
@@ -38,13 +38,20 @@ const achievements = [
     },
 ];
 
+type AchievementItem = {
+    title: string;
+    category: string;
+    year: string;
+    description: string;
+};
+
 /* --- Single achievement row component --- */
 function AchievementRow({
     item,
     index,
     delay,
 }: {
-    item: (typeof achievements)[0];
+    item: AchievementItem;
     index: number;
     delay: number;
 }) {
@@ -103,9 +110,11 @@ function AchievementRow({
 }
 
 /* --- Main Achievements section --- */
-export function Achievements() {
+export function Achievements({ items = fallbackAchievements }: { items?: AchievementItem[] }) {
     const sectionRef = useRef<HTMLDivElement>(null);
     const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+
+    const displayItems = items.length > 0 ? items : fallbackAchievements;
 
     return (
         <section ref={sectionRef} className="py-24 relative overflow-hidden">
@@ -128,9 +137,9 @@ export function Achievements() {
 
                 {/* Achievement rows — staggered fade-up */}
                 <div className="flex flex-col">
-                    {achievements.map((item, i) => (
+                    {displayItems.map((item, i) => (
                         <AchievementRow
-                            key={item.title}
+                            key={item.title + i}
                             item={item}
                             index={i}
                             delay={i * 0.08}

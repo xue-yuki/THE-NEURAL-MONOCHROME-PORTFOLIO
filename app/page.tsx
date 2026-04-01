@@ -12,11 +12,39 @@ const ContactCLI = dynamic(() => import("@/components/sections/ContactCLI").then
 const JarvisWidget = dynamic(() => import("@/components/sections/JarvisWidget").then(mod => mod.JarvisWidget));
 
 import { getGithubRepos, getGithubContributions } from "@/lib/github";
+import { getAchievements } from "@/app/admin/achievements/actions";
+import { getProjects } from "@/app/admin/projects/actions";
+import { getSiteTexts } from "@/app/admin/site-texts/actions";
+import { Achievement, Project } from "@prisma/client";
 /* Premium enhancements — animated bg + scroll-driven transitions */
 import { MeshGradient } from "@/components/ui/MeshGradientWrapper";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { fallbackProjects } from "@/components/sections/ProjectGallery";
 
 export default async function Home() {
+  let dbAchievements: Achievement[] = [];
+  let dbProjects: any[] = [];
+  let siteTexts: Record<string, string> = {};
+  
+  try {
+    dbAchievements = await getAchievements() as Achievement[];
+    const rawProjects = (await getProjects()) as Project[];
+    dbProjects = rawProjects.map(p => ({
+      id: p.id.slice(0, 4).toUpperCase(), // simple ID display
+      title: p.title,
+      category: p.category,
+      desc: p.description,
+      tags: p.techStack,
+      image: p.imageUrl || "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=600&h=450&auto=format&fit=crop"
+    }));
+    siteTexts = await getSiteTexts();
+  } catch (e) {
+    // Database connection string might not be set yet.
+  }
+
+  // Ensure fallback works seamlessly
+  const finalProjects = dbProjects.length > 0 ? dbProjects : fallbackProjects;
+
   const [repos, calendar] = await Promise.all([
     getGithubRepos("xue-yuki"),
     getGithubContributions("xue-yuki")
@@ -31,7 +59,7 @@ export default async function Home() {
       <div className="relative z-10">
         <div className="noise-overlay" />
         <Header />
-        <Hero />
+        <Hero siteTexts={siteTexts} />
         
         <Manifesto />
 
@@ -42,11 +70,11 @@ export default async function Home() {
 
         {/* Achievements — scales in for a dramatic entrance */}
         <ScrollReveal variant="fade-scale" delay={0.1}>
-          <Achievements />
+          <Achievements items={dbAchievements} />
         </ScrollReveal>
 
         <ScrollReveal variant="fade-up">
-          <ProjectGallery />
+          <ProjectGallery items={finalProjects} />
         </ScrollReveal>
         
         <ScrollReveal variant="fade-up" delay={0.1}>
