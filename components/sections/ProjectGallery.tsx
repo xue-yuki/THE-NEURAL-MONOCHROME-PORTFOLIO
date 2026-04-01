@@ -6,7 +6,7 @@ import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import { useRecruiterMode } from "@/components/providers/RecruiterProvider";
 
-export const fallbackProjects = [
+export const fallbackProjects: ProjectItem[] = [
     {
         id: "01",
         title: "NEURAL_SYNC",
@@ -48,6 +48,7 @@ type ProjectItem = {
     desc: string;
     tags: string[];
     image: string;
+    link?: string | null;
 };
 
 export function ProjectGallery({ items = fallbackProjects }: { items?: ProjectItem[] }) {
@@ -86,57 +87,74 @@ export function ProjectGallery({ items = fallbackProjects }: { items?: ProjectIt
 
                 {/* Refined Typography List */}
                 <div className="flex flex-col group/list w-full">
-                    {displayItems.map((project, index) => (
-                        <div
-                            key={project.id}
-                            className="group relative border-b border-neutral-800/60 hover:border-neutral-600 transition-colors duration-500"
-                            onMouseEnter={() => setHoveredIndex(index)}
-                            onMouseLeave={() => setHoveredIndex(null)}
-                        >
-                            <div className="py-10 md:py-12 flex flex-col md:flex-row md:items-center justify-between gap-6 cursor-pointer relative z-10 w-full">
-                                
-                                {/* 1. Number & Title */}
-                                <div className="flex flex-col md:flex-row md:items-baseline gap-4 md:gap-12 w-full md:w-3/5">
-                                    <span className="font-mono text-neutral-600 text-sm md:text-base transition-colors group-hover:text-neutral-400">
-                                        {project.id}
-                                    </span>
-                                    <h3 
-                                        className="text-5xl md:text-6xl lg:text-7xl font-sans font-semibold tracking-tighter uppercase text-neutral-400 transition-all duration-500 
-                                        group-hover:text-white md:group-hover:translate-x-4"
-                                    >
-                                        {project.title}
-                                    </h3>
-                                </div>
-
-                                {/* 2. Category, Desc & Tags (Right Side Alignment) */}
-                                <div className="flex flex-col md:items-end gap-3 w-full md:w-2/5 mt-4 md:mt-0">
-                                    <div className="flex items-center gap-3">
-                                        {/* Minimalist pill for category */}
-                                        <span className="font-mono text-neutral-300 text-xs tracking-widest uppercase bg-neutral-900 px-4 py-1.5 rounded-full border border-neutral-800 group-hover:border-neutral-500 transition-colors duration-500">
-                                            {project.category}
+                    {displayItems.map((project, index) => {
+                        const content = (
+                            <div
+                                className="group relative border-b border-neutral-800/60 hover:border-neutral-600 transition-colors duration-500"
+                                onMouseEnter={() => setHoveredIndex(index)}
+                                onMouseLeave={() => setHoveredIndex(null)}
+                            >
+                                <div className="py-10 md:py-12 flex flex-col md:flex-row md:items-center justify-between gap-6 cursor-pointer relative z-10 w-full">
+                                    
+                                    {/* 1. Number & Title */}
+                                    <div className="flex flex-col md:flex-row md:items-baseline gap-4 md:gap-12 w-full md:w-3/5">
+                                        <span className="font-mono text-neutral-600 text-sm md:text-base transition-colors group-hover:text-neutral-400">
+                                            {project.id}
                                         </span>
-                                        <ArrowUpRight className="w-6 h-6 text-neutral-600 group-hover:text-white group-hover:rotate-45 transition-all duration-500" />
+                                        <h3 
+                                            className="text-5xl md:text-6xl lg:text-7xl font-sans font-semibold tracking-tighter uppercase text-neutral-400 transition-all duration-500 
+                                            group-hover:text-white md:group-hover:translate-x-4"
+                                        >
+                                            {project.title}
+                                        </h3>
                                     </div>
-                                    
-                                    {/* Description properly aligned */}
-                                    <p className="text-neutral-500 font-sans text-sm md:text-base md:text-right max-w-sm mt-3 transition-colors duration-500 group-hover:text-neutral-300">
-                                        {project.desc}
-                                    </p>
-                                    
-                                    {/* Ultra-clean tags (hashtag style instead of heavy pills) */}
-                                    {!isRecruiterMode && (
-                                        <div className="flex flex-wrap md:justify-end gap-3 mt-2 w-full opacity-60 group-hover:opacity-100 transition-opacity duration-500">
-                                            {project.tags.map(tag => (
-                                                <span key={tag} className="text-xs font-mono text-neutral-500 group-hover:text-neutral-400 transition-colors">
-                                                    #{tag}
-                                                </span>
-                                            ))}
+
+                                    {/* 2. Category, Desc & Tags (Right Side Alignment) */}
+                                    <div className="flex flex-col md:items-end gap-3 w-full md:w-2/5 mt-4 md:mt-0">
+                                        <div className="flex items-center gap-3">
+                                            {/* Minimalist pill for category */}
+                                            <span className="font-mono text-neutral-300 text-xs tracking-widest uppercase bg-neutral-900 px-4 py-1.5 rounded-full border border-neutral-800 group-hover:border-neutral-500 transition-colors duration-500">
+                                                {project.category}
+                                            </span>
+                                            <ArrowUpRight className="w-6 h-6 text-neutral-600 group-hover:text-white group-hover:rotate-45 transition-all duration-500" />
                                         </div>
-                                    )}
+                                        
+                                        {/* Description properly aligned */}
+                                        <p className="text-neutral-500 font-sans text-sm md:text-base md:text-right max-w-sm mt-3 transition-colors duration-500 group-hover:text-neutral-300">
+                                            {project.desc}
+                                        </p>
+                                        
+                                        {/* Ultra-clean tags (hashtag style instead of heavy pills) */}
+                                        {!isRecruiterMode && (
+                                            <div className="flex flex-wrap md:justify-end gap-3 mt-2 w-full opacity-60 group-hover:opacity-100 transition-opacity duration-500">
+                                                {project.tags.map(tag => (
+                                                    <span key={tag} className="text-xs font-mono text-neutral-500 group-hover:text-neutral-400 transition-colors">
+                                                        #{tag}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+
+                        return project.link ? (
+                            <a 
+                                key={project.id} 
+                                href={project.link} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="block w-full"
+                            >
+                                {content}
+                            </a>
+                        ) : (
+                            <div key={project.id} className="block w-full">
+                                {content}
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
 

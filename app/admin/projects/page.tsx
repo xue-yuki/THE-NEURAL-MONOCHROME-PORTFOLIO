@@ -1,5 +1,5 @@
 import { getProjects, deleteProject } from "./actions";
-import { Plus, Trash2, ExternalLink } from "lucide-react";
+import { Plus, Trash2, ExternalLink, Pencil } from "lucide-react";
 import Link from "next/link";
 import { Project } from "@prisma/client";
 
@@ -51,17 +51,25 @@ export default async function ProjectsPage() {
                                     <h3 className="text-lg font-semibold text-white">{project.title}</h3>
                                     <span className="text-[10px] font-mono text-neutral-400 uppercase tracking-widest">{project.category}</span>
                                 </div>
-                                <form action={async () => {
-                                    "use server";
-                                    await deleteProject(project.id);
-                                }}>
-                                    <button 
-                                        type="submit" 
-                                        className="p-2 text-neutral-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                                <div className="flex items-center gap-2">
+                                    <Link 
+                                        href={`/admin/projects/${project.id}/edit`}
+                                        className="p-2 text-neutral-500 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                                     >
-                                        <Trash2 className="w-4 h-4" />
-                                    </button>
-                                </form>
+                                        <Pencil className="w-4 h-4" />
+                                    </Link>
+                                    <form action={async () => {
+                                        "use server";
+                                        await deleteProject(project.id);
+                                    }}>
+                                        <button 
+                                            type="submit" 
+                                            className="p-2 text-neutral-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
 
                             <p className="text-neutral-400 text-sm mb-4 line-clamp-2">{project.description}</p>

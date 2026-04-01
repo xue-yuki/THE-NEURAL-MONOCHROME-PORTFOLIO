@@ -35,7 +35,8 @@ export default async function Home() {
       category: p.category,
       desc: p.description,
       tags: p.techStack,
-      image: p.imageUrl || "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=600&h=450&auto=format&fit=crop"
+      image: p.imageUrl || "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=600&h=450&auto=format&fit=crop",
+      link: p.demoUrl || null
     }));
     siteTexts = await getSiteTexts();
   } catch (e) {
